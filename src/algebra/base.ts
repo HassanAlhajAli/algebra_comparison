@@ -344,9 +344,7 @@ const substituteVariables = (varMap: Map<string, number>, expr: AlgExpr): AlgExp
   return expr; // Int
 }
 
-
-// Helper: Force the expression to a JavaScript number (float)
-// This handles cases like (3/5) which remain as Div objects in our Integer-only system
+// get the float value
 const getComputedValue = (expr: AlgExpr): number => {
   switch (expr.type) {
     case "Int": return expr.value;
@@ -356,8 +354,8 @@ const getComputedValue = (expr: AlgExpr): number => {
     case "Mul": return getComputedValue(expr.arg1) * getComputedValue(expr.arg2);
     case "Div": {
       const denom = getComputedValue(expr.arg2);
-      if (denom === 0) return NaN; // Protect against divide by zero
-      return getComputedValue(expr.arg1) / denom; // Returns float (e.g. 0.6)
+      if (denom === 0) return NaN; 
+      return getComputedValue(expr.arg1) / denom;
     }
     case "Var": return NaN; // Should not happen if substitution worked
   }
@@ -365,7 +363,7 @@ const getComputedValue = (expr: AlgExpr): number => {
 
 // function take two algExpr and return boolean indicating whether two expressions are algebraically (semantically) equivalent. 
 export const areExpressionsEquivalent = (expr1: AlgExpr, expr2: AlgExpr): boolean => {
-  // get the set of unique variables in both expressions
+
   const vars1 = getVariablesSet(expr1);
   const vars2 = getVariablesSet(expr2); 
   const vars = new Set<string>([...Array.from(vars1), ...Array.from(vars2)]);
@@ -374,7 +372,7 @@ export const areExpressionsEquivalent = (expr1: AlgExpr, expr2: AlgExpr): boolea
   //   return false;
   // }
 
-  // Do the substitution and evaluation multiple times to reduce chance of false positives
+
   const iterations  = 10;
   const range = 100;
   for(let i = 0; i < iterations; i++) {
@@ -382,15 +380,13 @@ export const areExpressionsEquivalent = (expr1: AlgExpr, expr2: AlgExpr): boolea
       vars.forEach(v => {
         varMap.set(v, Math.floor(Math.random() * range) - range/2);
       });
-      // substitute variables in both expressions
+
       const substitutedExpr1 = substituteVariables(varMap, expr1);
       const substitutedExpr2 = substituteVariables(varMap, expr2);
 
-      // evaluate both expressions
       const evaluatedExpr1 = evaluateExpression(substitutedExpr1);
       const evaluatedExpr2 = evaluateExpression(substitutedExpr2);
 
-      // get computed values
       const val1 = getComputedValue(evaluatedExpr1);
       const val2 = getComputedValue(evaluatedExpr2);
 
