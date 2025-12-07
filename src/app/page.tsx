@@ -123,7 +123,7 @@ export default function Home() {
                   value={expr1Input}
                   onChange={(e) => setExpr1Input(e.target.value)}
                   className="w-full h-20 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-black dark:text-zinc-50 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., 1 + 2 + 3"
+                  placeholder="e.g., 1 + 2"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export default function Home() {
                   value={expr2Input}
                   onChange={(e) => setExpr2Input(e.target.value)}
                   className="w-full h-20 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-black dark:text-zinc-50 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., 3 + 2 + 1"
+                  placeholder="e.g., 2 + 1"
                 />
               </div>
             </div>
