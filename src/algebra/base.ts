@@ -308,7 +308,7 @@ export const evaluateExpression = (expression: AlgExpr): AlgExpr => {
     let left = evaluateExpression(expression.arg1);
     let right = evaluateExpression(expression.arg2);
     
-    if(isNumber(left) && isNumber(right) && getValue(right) !== 0) {
+    if(isNumber(left) && isNumber(right) && getValue(right) !== 0 && getValue(left) % getValue(right) === 0) {
         let a = getValue(left);
         let b = getValue(right);
 
