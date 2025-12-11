@@ -1,3 +1,5 @@
+import { get } from "http";
+
 export type AlgExpr =
   | { type: "Int"; value: number }
   | { type: "Var"; name: string }
@@ -273,18 +275,45 @@ export const evaluateExpression = (expression: AlgExpr): AlgExpr => {
         }
       return standardizeNumber(val);
     }
+
+    if(left.type === "Div" && right.type === "Div") {
+      // (a/b) op (c/d) = (a*d op b*c) / (b*d)
+      let a = left.arg1;
+      let b = left.arg2;
+      let c = right.arg1;
+      let d = right.arg2;
+      if(isNumber(a) && isNumber(b) && isNumber(c) && isNumber(d) && getValue(b) !== 0 && getValue(d) !== 0) {
+        let numer = getValue(a)*getValue(d) + getValue(b)*getValue(c); // numerator
+        let denom = getValue(b)*getValue(d); // common denominator
+        if(expression.type === "Sub") {
+          numer = getValue(a)*getValue(d) - getValue(b)*getValue(c) ;
+        }
+        if(expression.type === "Mul") {
+          numer = getValue(a)*getValue(c);
+          denom = getValue(b)*getValue(d);
+        }
+        return { type: "Div", arg1: standardizeNumber(numer), arg2: standardizeNumber(denom) };       
+      }
+
+    }
+
     else {
       return { type: expression.type, arg1: left, arg2: right };
     }
   }
+
 
   //Div
   if(expression.type === "Div") {
     let left = evaluateExpression(expression.arg1);
     let right = evaluateExpression(expression.arg2);
     
-    if(isNumber(left) && isNumber(right) && getValue(right) !== 0 && getValue(left) % getValue(right) === 0) {
-        let val = getValue(left) / getValue(right);
+    if(isNumber(left) && isNumber(right) && getValue(right) !== 0) {
+        let a = getValue(left);
+        let b = getValue(right);
+
+               
+        let val = a / b;
         return standardizeNumber(val);
     }
     else {
